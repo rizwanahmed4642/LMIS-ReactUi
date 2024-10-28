@@ -1,0 +1,64 @@
+/* General reset */
+
+  
+  /* Container for the 404 content */
+  .page-container {
+    text-align: center;
+    position: fixed;
+    z-index: 2;
+    inline-size: 100%;
+    block-size: 100%;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-inline-start: 0;
+    inset-block-end: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Text animation */
+  .message h1 {
+    font-size: 120px;
+    color: #ffffff;
+    animation: fadeInDown 1s ease-in-out;
+    background: radial-gradient(black, transparent);
+  }
+  
+  .message p {
+    font-size: 20px;
+    color: #cccccc;
+    margin-block-start: 10px;
+    animation: fadeInUp 1.5s ease-in-out;
+  }
+  
+  /* Button styling */
+  .back-button {
+    margin-block-start: 20px;
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    animation: fadeInUp 2s ease-in-out;
+    transition: background-color 0.3s;
+  }
+  
+  .back-button:hover {
+    background-color: #005bb5;
+    color: #fff;
+  }
+  
+  /* Keyframes for text animations */
+  @keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
