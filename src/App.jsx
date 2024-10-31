@@ -54,9 +54,13 @@ import ProgressBar from "./Components/UiElements/ProgressBar";
 import UiTab from "./Components/UiElements/UiTab";
 import UiWidget from "./Components/UiElements/UiWidget";
 import PageNotFound from "./Pages/PageNotFound";
+import Toastr from "./ui/Toastr";
 
 function App() {
   return (
+    <>
+    <Toastr />
+
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -123,6 +127,7 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
+    </>
   );
 }
 

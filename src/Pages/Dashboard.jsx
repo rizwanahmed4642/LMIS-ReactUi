@@ -1,9 +1,17 @@
 import React, { useEffect } from "react";
 import "../App.css";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
+  
   useEffect(() => {
+    if (localStorage.getItem("Token")) {
+      navigate("/dashboard");
+  } else {
+      navigate("/");
+  }
+
     $(".sidebar-toggle-view").on(
       "click",
       ".sidebar-nav-item .nav-link",
@@ -60,6 +68,11 @@ function Dashboard() {
     });
   }, []); // Empty dependency array to run once on mount
 
+  const logout = () => {
+    localStorage.clear();
+    navigate("/");
+  }
+  
   return (
     <>
       <div id="wrapper" className="wrapper bg-ash">
@@ -167,7 +180,7 @@ function Dashboard() {
                         </a>
                       </li>
                       <li>
-                        <a href="login.html">
+                        <a onClick={logout}>
                           <i className="flaticon-turn-off"></i>Log Out
                         </a>
                       </li>
