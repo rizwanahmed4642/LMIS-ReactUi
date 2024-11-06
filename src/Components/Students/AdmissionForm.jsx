@@ -4,13 +4,39 @@ import "../../assets/css/select2.min.css";
 
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../axiosInstance";
+import { GetById, GetByShortName, Post } from "../../Services/student-service";
+import {
+  bloodGroupShortName,
+  classSectionShortName,
+  genderShortName,
+  religionShortName,
+  studentClassShortName,
+} from "../../Constants/ShortNameConstants";
 
 function AdmissionForm() {
   const [isLoading, setLoading] = useState(true);
+  const [genderList, setGenderList] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [religionList, setReligionList] = useState([]);
+  const [bloodGroupList, setBloodGroupList] = useState([]);
+  const [studentClassList, setStudentClassList] = useState([]);
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
+
+    const fetchData = async () => {
+      const url =
+        import.meta.env.REACT_APP_BASE_URL +
+        "Profiles/GetProfilesByProfileTypes";
+      setGenderList(await GetByShortName(url, genderShortName));
+      setSectionList(await GetByShortName(url, classSectionShortName));
+      setReligionList(await GetByShortName(url, religionShortName));
+      setBloodGroupList(await GetByShortName(url, bloodGroupShortName));
+      setStudentClassList(await GetByShortName(url, studentClassShortName));
+    };
+
+    fetchData();
   }, []);
 
   const [admissionForm, setAdmissionForm] = useState({
@@ -24,11 +50,11 @@ function AdmissionForm() {
     roleShortName: "STUDNT",
     studentCreateOrEditDto: {
       studentId: null,
-      rollNo: '',
+      rollNo: "",
       bloodGroupTypeProfileId: null,
       religionTypeProfileId: null,
-      studentClass: null,
-      section: null,
+      StudentClassTypeProfileId: null,
+      StudentClassSectionTypeProfileId: null,
       admissionId: null,
       phoneNo: null,
       shortBio: null,
@@ -37,37 +63,56 @@ function AdmissionForm() {
   });
 
   const uploadPhoto = (e) => {
-    console.log(e.target.files[0]);
     const file = e.target.files[0]; // Get the selected file
     if (file) {
-        const reader = new FileReader();
+      const reader = new FileReader();
 
-        reader.onloadend = function() {
-            const base64String = reader.result; // This will be a Base64 string
-            setAdmissionForm((prevData) => ({
-              ...prevData,
-              studentCreateOrEditDto:{
-                ...prevData.studentCreateOrEditDto,
-                StudentPhotoBase64: base64String
-              }
-            }))            
-        };
+      reader.onloadend = function () {
+        const base64String = reader.result; // This will be a Base64 string
+        setAdmissionForm((prevData) => ({
+          ...prevData,
+          studentCreateOrEditDto: {
+            ...prevData.studentCreateOrEditDto,
+            StudentPhotoBase64: base64String,
+          },
+        }));
+      };
 
-        reader.readAsDataURL(file); // Read the file as a data URL (Base64)
-    } else {
-        console.log('No file selected');
+      reader.readAsDataURL(file); // Read the file as a data URL (Base64)
     }
-
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = import.meta.env.REACT_APP_STUDENT_BASE_URL + 'Students/CreateOrEdit'
+    const url =
+      import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/CreateOrEdit";
 
-    console.log(admissionForm);
-    axiosInstance.post(url,admissionForm).then(res => {
-
-    })
+      const response = await Post(url, admissionForm);
+      debugger
+      if (response) {
+        setAdmissionForm({
+          id: null,
+          firstName: null,
+          lastName: null,
+          genderTypeProfileId: null,
+          dateOfBirth: null,
+          email: null,
+          password: null,
+          roleShortName: "STUDNT",
+          studentCreateOrEditDto: {
+            studentId: null,
+            rollNo: null,
+            bloodGroupTypeProfileId: null,
+            religionTypeProfileId: null,
+            StudentClassTypeProfileId: null,
+            StudentClassSectionTypeProfileId: null,
+            admissionId: null,
+            phoneNo: null,
+            shortBio: null,
+            StudentPhotoBase64: null,
+          },
+        });
+      }
   };
 
   const resetForm = () => {
@@ -85,8 +130,8 @@ function AdmissionForm() {
         rollNo: null,
         bloodGroupTypeProfileId: null,
         religionTypeProfileId: null,
-        studentClass: null,
-        section: null,
+        StudentClassTypeProfileId: null,
+        StudentClassSectionTypeProfileId: null,
         admissionId: null,
         phoneNo: null,
         shortBio: null,
@@ -147,9 +192,12 @@ function AdmissionForm() {
                     type="text"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.firstName ?? ''}
+                    value={admissionForm.firstName ?? ""}
                     onChange={(e) =>
-                      setAdmissionForm((prevData) => ({ ...prevData, firstName: e.target.value }))
+                      setAdmissionForm((prevData) => ({
+                        ...prevData,
+                        firstName: e.target.value,
+                      }))
                     }
                   />
                 </div>
@@ -159,9 +207,12 @@ function AdmissionForm() {
                     type="text"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.lastName ?? ''}
+                    value={admissionForm.lastName ?? ""}
                     onChange={(e) =>
-                      setAdmissionForm((prevData) => ({ ...prevData,lastName: e.target.value }))
+                      setAdmissionForm((prevData) => ({
+                        ...prevData,
+                        lastName: e.target.value,
+                      }))
                     }
                   />
                 </div>
@@ -169,15 +220,24 @@ function AdmissionForm() {
                   <label>Gender *</label>
                   <select
                     className="select2 form-control"
-                    value={admissionForm.genderTypeProfileId ?? ''}
+                    value={admissionForm.genderTypeProfileId ?? ""}
                     onChange={(e) =>
-                      setAdmissionForm((prevData) => ({ ...prevData,genderTypeProfileId: e.target.value }))
+                      setAdmissionForm((prevData) => ({
+                        ...prevData,
+                        genderTypeProfileId: e.target.value,
+                      }))
                     }
                   >
-                    <option value="">Please Select Gender *</option>
-                    <option value="1">Male</option>
-                    <option value="2">Female</option>
-                    <option value="3">Others</option>
+                    <option value="" disabled>
+                      Please Select Gender *
+                    </option>
+                    {genderList &&
+                      genderList.length > 0 &&
+                      genderList.map((item) => (
+                        <option key={item?.profileId} value={item?.profileId}>
+                          {item?.profileName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
@@ -187,9 +247,12 @@ function AdmissionForm() {
                     placeholder="dd/mm/yyyy"
                     className="form-control air-datepicker"
                     data-position="bottom right"
-                    value={admissionForm.dateOfBirth ?? ''}
+                    value={admissionForm.dateOfBirth ?? ""}
                     onChange={(e) =>
-                      setAdmissionForm((prevData) => ({ ...prevData,dateOfBirth: e.target.value }))
+                      setAdmissionForm((prevData) => ({
+                        ...prevData,
+                        dateOfBirth: e.target.value,
+                      }))
                     }
                   />
                   <i className="far fa-calendar-alt"></i>
@@ -200,7 +263,7 @@ function AdmissionForm() {
                     type="text"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.studentCreateOrEditDto.rollNo ?? ''}
+                    value={admissionForm.studentCreateOrEditDto.rollNo ?? ""}
                     onChange={(e) =>
                       setAdmissionForm((prevState) => ({
                         ...prevState, // Preserve existing state
@@ -218,7 +281,7 @@ function AdmissionForm() {
                     className="select2 form-control"
                     value={
                       admissionForm.studentCreateOrEditDto
-                        .bloodGroupTypeProfileId ?? ''
+                        .bloodGroupTypeProfileId ?? ""
                     }
                     onChange={(e) =>
                       setAdmissionForm((prev) => ({
@@ -230,13 +293,14 @@ function AdmissionForm() {
                       }))
                     }
                   >
-                    <option value="">Please Select Group *</option>
-                    <option value="1">A+</option>
-                    <option value="2">A-</option>
-                    <option value="3">B+</option>
-                    <option value="3">B-</option>
-                    <option value="3">O+</option>
-                    <option value="3">O-</option>
+                    <option value="" disabled>Please Select Group *</option>
+                    {bloodGroupList &&
+                      bloodGroupList.length > 0 &&
+                      bloodGroupList.map((item) => (
+                        <option key={item?.profileId} value={item?.profileId}>
+                          {item?.profileName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
@@ -244,7 +308,8 @@ function AdmissionForm() {
                   <select
                     className="select2 form-control"
                     value={
-                      admissionForm.studentCreateOrEditDto.religionTypeProfileId ?? ''
+                      admissionForm.studentCreateOrEditDto
+                        .religionTypeProfileId ?? ""
                     }
                     onChange={(e) => {
                       setAdmissionForm((prev) => ({
@@ -256,12 +321,14 @@ function AdmissionForm() {
                       }));
                     }}
                   >
-                    <option value="">Please Select Religion *</option>
-                    <option value="1">Islam</option>
-                    <option value="2">Hindu</option>
-                    <option value="3">Christian</option>
-                    <option value="3">Buddish</option>
-                    <option value="3">Others</option>
+                    <option value="" disabled>Please Select Religion *</option>
+                    {religionList &&
+                      religionList.length > 0 &&
+                      religionList.map((item) => (
+                        <option key={item?.profileId} value={item?.profileId}>
+                          {item?.profileName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
@@ -270,9 +337,12 @@ function AdmissionForm() {
                     type="email"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.email ?? ''}
+                    value={admissionForm.email ?? ""}
                     onChange={(e) =>
-                      setAdmissionForm((prevData) => ({...prevData ,email: e.target.value }))
+                      setAdmissionForm((prevData) => ({
+                        ...prevData,
+                        email: e.target.value,
+                      }))
                     }
                   />
                 </div>
@@ -280,48 +350,52 @@ function AdmissionForm() {
                   <label>Class *</label>
                   <select
                     className="select2 form-control"
-                    value={admissionForm.studentCreateOrEditDto.studentClass ?? ''}
+                    value={
+                      admissionForm.studentCreateOrEditDto.StudentClassTypeProfileId ?? ""
+                    }
                     onChange={(e) => {
                       setAdmissionForm((prev) => ({
                         ...prev,
                         studentCreateOrEditDto: {
                           ...prev.studentCreateOrEditDto,
-                          studentClass: e.target.value,
+                          StudentClassTypeProfileId: e.target.value,
                         },
                       }));
                     }}
                   >
-                    <option value="">Please Select Class *</option>
-                    <option value="1">Play</option>
-                    <option value="2">Nursery</option>
-                    <option value="3">One</option>
-                    <option value="3">Two</option>
-                    <option value="3">Three</option>
-                    <option value="3">Four</option>
-                    <option value="3">Five</option>
+                    <option value="" disabled>Please Select Class *</option>
+                    {studentClassList &&
+                      studentClassList.length > 0 &&
+                      studentClassList.map((item) => (
+                        <option key={item?.profileId} value={item?.profileId}>
+                          {item?.profileName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label>Section *</label>
                   <select
                     className="select2 form-control"
-                    value={admissionForm.studentCreateOrEditDto.section ?? ''}
+                    value={admissionForm.studentCreateOrEditDto.StudentClassSectionTypeProfileId ?? ""}
                     onChange={(e) => {
                       setAdmissionForm((prev) => ({
                         ...prev,
                         studentCreateOrEditDto: {
                           ...prev.studentCreateOrEditDto,
-                          section: e.target.value,
+                          StudentClassSectionTypeProfileId: e.target.value,
                         },
                       }));
                     }}
                   >
-                    <option value="">Please Select Section *</option>
-                    <option value="1">Pink</option>
-                    <option value="2">Blue</option>
-                    <option value="3">Bird</option>
-                    <option value="3">Rose</option>
-                    <option value="3">Red</option>
+                    <option value="" disabled>Please Select Section *</option>
+                    {sectionList &&
+                      sectionList.length > 0 &&
+                      sectionList.map((item) => (
+                        <option key={item?.profileId} value={item?.profileId}>
+                          {item?.profileName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
@@ -330,7 +404,9 @@ function AdmissionForm() {
                     type="text"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.studentCreateOrEditDto.admissionId ?? ''}
+                    value={
+                      admissionForm.studentCreateOrEditDto.admissionId ?? ""
+                    }
                     onChange={(e) => {
                       setAdmissionForm((prev) => ({
                         ...prev,
@@ -348,7 +424,7 @@ function AdmissionForm() {
                     type="text"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.studentCreateOrEditDto.phoneNo ?? ''}
+                    value={admissionForm.studentCreateOrEditDto.phoneNo ?? ""}
                     onChange={(e) => {
                       setAdmissionForm((prev) => ({
                         ...prev,
@@ -368,7 +444,7 @@ function AdmissionForm() {
                     id="form-message"
                     cols="10"
                     rows="9"
-                    value={admissionForm.studentCreateOrEditDto.shortBio ?? ''}
+                    value={admissionForm.studentCreateOrEditDto.shortBio ?? ""}
                     onChange={(e) => {
                       setAdmissionForm((prev) => ({
                         ...prev,
@@ -384,7 +460,11 @@ function AdmissionForm() {
                   <label className="text-dark-medium">
                     Upload Student Photo (150px X 150px)
                   </label>
-                  <input type="file" className="form-control-file" onChange={uploadPhoto} />
+                  <input
+                    type="file"
+                    className="form-control-file"
+                    onChange={uploadPhoto}
+                  />
                 </div>
                 <div className="col-12 form-group mg-t-8">
                   <button

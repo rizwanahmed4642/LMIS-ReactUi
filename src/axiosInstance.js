@@ -18,7 +18,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    if (response.data?.statusCode === "201") {
+    if (response.data?.statusCode == 201) {
       toast.success("Record Saved Successfully!", {
         position: "top-right",
         autoClose: 5000,
@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
         pauseOnHover: true,
         draggable: true,
       });
-    } else if (response.data?.statusCode === "400") {
+    } else if (response.data?.statusCode == 400) {
       toast.error(
         "The request could not be understood or was missing required parameters.",
         {
@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
           draggable: true,
         }
       );
-    } else if (response.data?.statusCode === "401") {
+    } else if (response.data?.statusCode == 401) {
       toast.error("Your Session is Expired Login Again..!", {
         position: "top-right",
         autoClose: 5000,
@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
 
       localStorage.clear();
       window.location.reload();
-    } else if (response.data?.statusCode === "500") {
+    } else if (response.data?.statusCode == 500) {
       toast.error("Internal Server Error.", {
         position: "top-right",
         autoClose: 5000,
@@ -60,6 +60,8 @@ axiosInstance.interceptors.response.use(
         pauseOnHover: true,
         draggable: true,
       });
+    } else if(response?.data?.statusCode == 200){
+      return response;
     } else {
       toast.error("Internal Server Error.", {
         position: "top-right",
@@ -70,8 +72,12 @@ axiosInstance.interceptors.response.use(
         draggable: true,
       });
     }
+
+     // Ensure the response is returned to the calling function
+     return response;
   },(err) => {
-    if (err.status === 401) {
+    debugger
+    if (err.status == 401) {
         toast.error("Your Session is Expired Login Again..!", {
             position: "top-right",
             autoClose: 5000,
