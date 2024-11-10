@@ -1,0 +1,6 @@
+.input-error-message {
+    color: rgba(231, 101, 101, 0.705);
+    white-space: nowrap;         /* Prevent the text from wrapping */
+    overflow: hidden;            /* Hide any overflowed content */
+    text-overflow: ellipsis;     /* Show ellipsis when the text overflows */
+}

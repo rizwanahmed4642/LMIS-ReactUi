@@ -1,17 +1,12 @@
 import { Link } from "react-router-dom";
 import "../../assets/css/datepicker.min.css";
 import "../../assets/css/select2.min.css";
-
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../../axiosInstance";
-import { GetById, GetByShortName, Post } from "../../Services/student-service";
-import {
-  bloodGroupShortName,
-  classSectionShortName,
-  genderShortName,
-  religionShortName,
-  studentClassShortName,
-} from "../../Constants/ShortNameConstants";
+import { GetByShortName, Post } from "../../Services/student-service";
+import { bloodGroupShortName, classSectionShortName, genderShortName, religionShortName, studentClassShortName } from "../../Constants/ShortNameConstants";
+import { ErrorMessage, useFormik } from "formik";
+import { StudentAdmissionFormSchema } from "../../Schemas";
+import { StudentAdmissionForminitialValue } from "../../Schemas/SchemaInitialValues";
 
 function AdmissionForm() {
   const [isLoading, setLoading] = useState(true);
@@ -39,107 +34,65 @@ function AdmissionForm() {
     fetchData();
   }, []);
 
-  const [admissionForm, setAdmissionForm] = useState({
-    id: null,
-    firstName: null,
-    lastName: null,
-    genderTypeProfileId: null,
-    dateOfBirth: null,
-    email: null,
-    password: null,
-    roleShortName: "STUDNT",
-    studentCreateOrEditDto: {
-      studentId: null,
-      rollNo: "",
-      bloodGroupTypeProfileId: null,
-      religionTypeProfileId: null,
-      StudentClassTypeProfileId: null,
-      StudentClassSectionTypeProfileId: null,
-      admissionId: null,
-      phoneNo: null,
-      shortBio: null,
-      StudentPhotoBase64: null,
-    },
-  });
-
   const uploadPhoto = (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (file) {
       const reader = new FileReader();
 
+      // Validate if the file is an image
+      if (!file.type.startsWith("image/")) {
+        // If not an image, set an error message using setErrors
+        setErrors({
+          studentCreateOrEditDto: {
+            StudentPhotoBase64: "File should only contain a photo", // Custom error message
+          },
+        });
+        return; // Exit early if the file is invalid
+      }
+
       reader.onloadend = function () {
         const base64String = reader.result; // This will be a Base64 string
-        setAdmissionForm((prevData) => ({
-          ...prevData,
-          studentCreateOrEditDto: {
-            ...prevData.studentCreateOrEditDto,
-            StudentPhotoBase64: base64String,
-          },
-        }));
+
+        // Update the Formik field value for StudentPhotoBase64
+        setFieldValue(
+          "studentCreateOrEditDto.StudentPhotoBase64",
+          base64String
+        );
       };
 
       reader.readAsDataURL(file); // Read the file as a data URL (Base64)
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const url =
-      import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/CreateOrEdit";
+  const handleResetForm = () => {
+    resetForm();
+    document.getElementById("StudentPhotoBase64").value = "";
+  }
 
-      const response = await Post(url, admissionForm);
-      debugger
+  const {
+    values,
+    errors,
+    handleChange,
+    setErrors,
+    setFieldValue,
+    handleSubmit,
+    handleBlur,
+    resetForm,
+    touched
+  } = useFormik({
+    initialValues: StudentAdmissionForminitialValue,
+    validationSchema: StudentAdmissionFormSchema,
+    onSubmit: async (value) => {
+      const url =
+        import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/CreateOrEdit";
+
+      const response = await Post(url, value);
       if (response) {
-        setAdmissionForm({
-          id: null,
-          firstName: null,
-          lastName: null,
-          genderTypeProfileId: null,
-          dateOfBirth: null,
-          email: null,
-          password: null,
-          roleShortName: "STUDNT",
-          studentCreateOrEditDto: {
-            studentId: null,
-            rollNo: null,
-            bloodGroupTypeProfileId: null,
-            religionTypeProfileId: null,
-            StudentClassTypeProfileId: null,
-            StudentClassSectionTypeProfileId: null,
-            admissionId: null,
-            phoneNo: null,
-            shortBio: null,
-            StudentPhotoBase64: null,
-          },
-        });
+        resetForm();
+        document.getElementById("StudentPhotoBase64").value = "";
       }
-  };
-
-  const resetForm = () => {
-    setAdmissionForm({
-      id: null,
-      firstName: null,
-      lastName: null,
-      genderTypeProfileId: null,
-      dateOfBirth: null,
-      email: null,
-      password: null,
-      roleShortName: "STUDNT",
-      studentCreateOrEditDto: {
-        studentId: null,
-        rollNo: null,
-        bloodGroupTypeProfileId: null,
-        religionTypeProfileId: null,
-        StudentClassTypeProfileId: null,
-        StudentClassSectionTypeProfileId: null,
-        admissionId: null,
-        phoneNo: null,
-        shortBio: null,
-        StudentPhotoBase64: null,
-      },
-    });
-  };
-
+    },
+  });
   return (
     <>
       {isLoading && <div id="preloader"></div>}
@@ -184,49 +137,45 @@ function AdmissionForm() {
                 </div>
               </div>
             </div>
-            <form className="new-added-form">
+            <form className="new-added-form" onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>First Name *</label>
+                  <label htmlFor="firstName">First Name *</label>
                   <input
                     type="text"
                     placeholder=""
                     className="form-control"
-                    value={admissionForm.firstName ?? ""}
-                    onChange={(e) =>
-                      setAdmissionForm((prevData) => ({
-                        ...prevData,
-                        firstName: e.target.value,
-                      }))
-                    }
+                    id="firstName"
+                    name="firstName"
+                    value={values.firstName ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  { (touched.firstName && errors.firstName) && <small className="input-error-message">{ errors.firstName }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Last Name *</label>
+                  <label htmlFor="lastName">Last Name *</label>
                   <input
                     type="text"
                     placeholder=""
+                    name="lastName"
+                    id="lastName"
                     className="form-control"
-                    value={admissionForm.lastName ?? ""}
-                    onChange={(e) =>
-                      setAdmissionForm((prevData) => ({
-                        ...prevData,
-                        lastName: e.target.value,
-                      }))
-                    }
+                    value={values.lastName ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                                    { (touched.lastName && errors.lastName) && <small className="input-error-message">{ errors.lastName }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Gender *</label>
+                  <label htmlFor="genderTypeProfileId">Gender *</label>
                   <select
                     className="select2 form-control"
-                    value={admissionForm.genderTypeProfileId ?? ""}
-                    onChange={(e) =>
-                      setAdmissionForm((prevData) => ({
-                        ...prevData,
-                        genderTypeProfileId: e.target.value,
-                      }))
-                    }
+                    id="genderTypeProfileId"
+                    name="genderTypeProfileId"
+                    value={values.genderTypeProfileId ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
                     <option value="" disabled>
                       Please Select Gender *
@@ -239,61 +188,54 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
+                  { (touched.genderTypeProfileId && errors.genderTypeProfileId) && <small className="input-error-message">{ errors.genderTypeProfileId }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Date Of Birth *</label>
+                  <label htmlFor="dateOfBirth">Date Of Birth *</label>
                   <input
                     type="date"
                     placeholder="dd/mm/yyyy"
                     className="form-control air-datepicker"
                     data-position="bottom right"
-                    value={admissionForm.dateOfBirth ?? ""}
-                    onChange={(e) =>
-                      setAdmissionForm((prevData) => ({
-                        ...prevData,
-                        dateOfBirth: e.target.value,
-                      }))
-                    }
+                    name="dateOfBirth"
+                    id="dateOfBirth"
+                    value={values.dateOfBirth ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
                   <i className="far fa-calendar-alt"></i>
+
+                  { (touched.dateOfBirth && errors.dateOfBirth) && <small className="input-error-message">{ errors.dateOfBirth }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Roll</label>
+                  <label htmlFor="rollNo">Roll</label>
                   <input
                     type="text"
                     placeholder=""
+                    name="studentCreateOrEditDto.rollNo"
+                    id="rollNo"
                     className="form-control"
-                    value={admissionForm.studentCreateOrEditDto.rollNo ?? ""}
-                    onChange={(e) =>
-                      setAdmissionForm((prevState) => ({
-                        ...prevState, // Preserve existing state
-                        studentCreateOrEditDto: {
-                          ...prevState.studentCreateOrEditDto, // Preserve existing studentCreateOrEditDto properties
-                          rollNo: e.target.value, // Update rollNo
-                        },
-                      }))
-                    }
+                    value={values.studentCreateOrEditDto.rollNo ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  { (touched?.studentCreateOrEditDto?.rollNo && errors?.studentCreateOrEditDto?.rollNo) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.rollNo }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Blood Group *</label>
+                  <label htmlFor="bloodGroupTypeProfileId">Blood Group *</label>
                   <select
                     className="select2 form-control"
+                    id="bloodGroupTypeProfileId"
+                    name="studentCreateOrEditDto.bloodGroupTypeProfileId"
                     value={
-                      admissionForm.studentCreateOrEditDto
-                        .bloodGroupTypeProfileId ?? ""
+                      values.studentCreateOrEditDto.bloodGroupTypeProfileId
                     }
-                    onChange={(e) =>
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          bloodGroupTypeProfileId: e.target.value,
-                        },
-                      }))
-                    }
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
-                    <option value="" disabled>Please Select Group *</option>
+                    <option value="" disabled>
+                      Please Select Group *
+                    </option>
                     {bloodGroupList &&
                       bloodGroupList.length > 0 &&
                       bloodGroupList.map((item) => (
@@ -302,26 +244,21 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
+                  { (touched?.studentCreateOrEditDto?.bloodGroupTypeProfileId && errors?.studentCreateOrEditDto?.bloodGroupTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.bloodGroupTypeProfileId }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Religion *</label>
+                  <label htmlFor="religionTypeProfileId">Religion *</label>
                   <select
                     className="select2 form-control"
-                    value={
-                      admissionForm.studentCreateOrEditDto
-                        .religionTypeProfileId ?? ""
-                    }
-                    onChange={(e) => {
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          religionTypeProfileId: e.target.value,
-                        },
-                      }));
-                    }}
+                    id="religionTypeProfileId"
+                    name="studentCreateOrEditDto.religionTypeProfileId"
+                    value={values.studentCreateOrEditDto.religionTypeProfileId}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
-                    <option value="" disabled>Please Select Religion *</option>
+                    <option value="" disabled>
+                      Please Select Religion *
+                    </option>
                     {religionList &&
                       religionList.length > 0 &&
                       religionList.map((item) => (
@@ -330,40 +267,38 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
+                  { (touched?.studentCreateOrEditDto?.religionTypeProfileId && errors?.studentCreateOrEditDto?.religionTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.religionTypeProfileId }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>E-Mail</label>
+                  <label htmlFor="email">E-Mail</label>
                   <input
                     type="email"
                     placeholder=""
+                    id="email"
+                    name="email"
                     className="form-control"
-                    value={admissionForm.email ?? ""}
-                    onChange={(e) =>
-                      setAdmissionForm((prevData) => ({
-                        ...prevData,
-                        email: e.target.value,
-                      }))
-                    }
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  { (touched.email && errors.email) && <small className="input-error-message">{ errors.email }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Class *</label>
+                  <label htmlFor="StudentClassTypeProfileId">Class *</label>
                   <select
                     className="select2 form-control"
+                    id="StudentClassTypeProfileId"
+                    name="studentCreateOrEditDto.StudentClassTypeProfileId"
                     value={
-                      admissionForm.studentCreateOrEditDto.StudentClassTypeProfileId ?? ""
+                      values.studentCreateOrEditDto.StudentClassTypeProfileId ??
+                      ""
                     }
-                    onChange={(e) => {
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          StudentClassTypeProfileId: e.target.value,
-                        },
-                      }));
-                    }}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
-                    <option value="" disabled>Please Select Class *</option>
+                    <option value="" disabled>
+                      Please Select Class *
+                    </option>
                     {studentClassList &&
                       studentClassList.length > 0 &&
                       studentClassList.map((item) => (
@@ -372,23 +307,26 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
+                  { (touched?.studentCreateOrEditDto?.StudentClassTypeProfileId && errors?.studentCreateOrEditDto?.StudentClassTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.StudentClassTypeProfileId }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Section *</label>
+                  <label htmlFor="StudentClassSectionTypeProfileId">
+                    Section *
+                  </label>
                   <select
                     className="select2 form-control"
-                    value={admissionForm.studentCreateOrEditDto.StudentClassSectionTypeProfileId ?? ""}
-                    onChange={(e) => {
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          StudentClassSectionTypeProfileId: e.target.value,
-                        },
-                      }));
-                    }}
+                    id="StudentClassSectionTypeProfileId"
+                    name="studentCreateOrEditDto.StudentClassSectionTypeProfileId"
+                    value={
+                      values.studentCreateOrEditDto
+                        .StudentClassSectionTypeProfileId ?? ""
+                    }
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
-                    <option value="" disabled>Please Select Section *</option>
+                    <option value="" disabled>
+                      Please Select Section *
+                    </option>
                     {sectionList &&
                       sectionList.length > 0 &&
                       sectionList.map((item) => (
@@ -397,74 +335,66 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
+                  { (touched?.studentCreateOrEditDto?.StudentClassSectionTypeProfileId && errors?.studentCreateOrEditDto?.StudentClassSectionTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.StudentClassSectionTypeProfileId }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Admission ID</label>
+                  <label htmlFor="admissionId">Admission ID</label>
                   <input
                     type="text"
                     placeholder=""
+                    id="admissionId"
+                    name="studentCreateOrEditDto.admissionId"
                     className="form-control"
-                    value={
-                      admissionForm.studentCreateOrEditDto.admissionId ?? ""
-                    }
-                    onChange={(e) => {
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          admissionId: e.target.value,
-                        },
-                      }));
-                    }}
+                    value={values.studentCreateOrEditDto.admissionId ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  { (touched?.studentCreateOrEditDto?.admissionId && errors?.studentCreateOrEditDto?.admissionId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.admissionId }</small> }
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
-                  <label>Phone</label>
+                  <label htmlFor="phoneNo">Phone</label>
                   <input
                     type="text"
                     placeholder=""
+                    id="phoneNo"
+                    name="studentCreateOrEditDto.phoneNo"
                     className="form-control"
-                    value={admissionForm.studentCreateOrEditDto.phoneNo ?? ""}
-                    onChange={(e) => {
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          phoneNo: e.target.value,
-                        },
-                      }));
-                    }}
+                    value={values.studentCreateOrEditDto.phoneNo ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  { (touched?.studentCreateOrEditDto?.phoneNo && errors?.studentCreateOrEditDto?.phoneNo) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.phoneNo }</small> }
                 </div>
                 <div className="col-lg-6 col-12 form-group">
-                  <label>Short BIO</label>
+                  <label htmlFor="shortBio">Short BIO</label>
                   <textarea
                     className="textarea form-control"
-                    name="message"
-                    id="form-message"
+                    name="studentCreateOrEditDto.shortBio"
+                    id="shortBio"
                     cols="10"
                     rows="9"
-                    value={admissionForm.studentCreateOrEditDto.shortBio ?? ""}
-                    onChange={(e) => {
-                      setAdmissionForm((prev) => ({
-                        ...prev,
-                        studentCreateOrEditDto: {
-                          ...prev.studentCreateOrEditDto,
-                          shortBio: e.target.value,
-                        },
-                      }));
-                    }}
+                    value={values.studentCreateOrEditDto.shortBio ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   ></textarea>
+                  { (touched?.studentCreateOrEditDto?.shortBio && errors?.studentCreateOrEditDto?.shortBio) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.shortBio }</small> }
                 </div>
                 <div className="col-lg-6 col-12 form-group mg-t-30">
-                  <label className="text-dark-medium">
+                  <label
+                    className="text-dark-medium"
+                    htmlFor="StudentPhotoBase64"
+                  >
                     Upload Student Photo (150px X 150px)
                   </label>
                   <input
                     type="file"
                     className="form-control-file"
-                    onChange={uploadPhoto}
+                    id="StudentPhotoBase64"
+                    name="studentCreateOrEditDto.StudentPhotoBase64"
+                    onChange={(e) => uploadPhoto(e)}
+                    onBlur={handleBlur}
                   />
+                  { (touched?.studentCreateOrEditDto?.StudentPhotoBase64 && errors?.studentCreateOrEditDto?.StudentPhotoBase64) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.StudentPhotoBase64 }</small> }
                 </div>
                 <div className="col-12 form-group mg-t-8">
                   <button
@@ -477,7 +407,7 @@ function AdmissionForm() {
                   <button
                     type="reset"
                     className="btn-fill-lg bg-blue-dark btn-hover-yellow"
-                    onClick={resetForm}
+                    onClick={handleResetForm}
                   >
                     Reset
                   </button>

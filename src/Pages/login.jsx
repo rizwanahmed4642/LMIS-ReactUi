@@ -28,7 +28,6 @@ function Login() {
 
   //#region  Login Code
   const handleSubmit = async (e) => {
-    debugger
     e.preventDefault();
     if (username != "" && password != "") {
         setIsLoading(true)
@@ -48,7 +47,7 @@ function Login() {
                 pauseOnHover: true,
                 draggable: true,
               });
-              debugger
+
               localStorage.setItem("Token",res.data.data.token);
               navigate("/dashboard");
             console.log(res);
