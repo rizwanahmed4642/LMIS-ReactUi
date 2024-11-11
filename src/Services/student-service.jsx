@@ -11,6 +11,12 @@ export async function Get(url) {
     return response?.data?.data;
 }
 
+export async function GetAllWithPagination(url, searchTerm, pageNo, pageSize) {
+    url = url + `?searchTerm=${searchTerm}&PageNo=${pageNo}&PageSize=${pageSize}`;
+    const response = await axiosInstance.get(url);
+    return response?.data?.data;
+}
+
 export async function GetById(url,id) {
     const response = await axiosInstance.get(url + `/${id}`);
     return response?.data?.data;

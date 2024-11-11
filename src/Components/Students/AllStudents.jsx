@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Get } from "../../Services/student-service";
+import { Get, GetAllWithPagination } from "../../Services/student-service";
 import { Link } from "react-router-dom";
 import Pagination from "../../shared/Pagination";
 
@@ -7,7 +7,8 @@ function AllStudents() {
   const [isLoading, setLoading] = useState(true);
   const [studentList, setStudentList] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
-  const pageSize = 10;
+  const [pageSize] = useState(10);
+  const [searchTerm,setSearchTerm] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -19,10 +20,12 @@ function AllStudents() {
   }, []);
 
   const FetchData = async (Page) => {
+    debugger
     const url =
       import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetAllStudents";
-      const data = await Get(url,Page);
-    setStudentList(data);
+      const data = await GetAllWithPagination(url, searchTerm, Page, pageSize);
+      setStudentList(data);
+      setTotalItems(data[0]?.totalCount);
   };
 
   const handlePageChange = (page) => {
