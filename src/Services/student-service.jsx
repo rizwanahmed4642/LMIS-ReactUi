@@ -16,6 +16,11 @@ export async function GetById(url,id) {
     return response?.data?.data;
 }
 
+export async function GetByQueryId(url,id) {
+    const response = await axiosInstance.get(url + `?id=${id}`);
+    return response?.data?.data;
+}
+
 export async function GetByShortName(url,shortName) {
     const response = await axiosInstance.get(url + `?shortName=${shortName}`);
     return response?.data?.data;

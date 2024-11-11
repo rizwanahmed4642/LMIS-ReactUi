@@ -1,26 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Get } from "../../Services/student-service";
+import { Link } from "react-router-dom";
+import Pagination from "../../shared/Pagination";
 
 function AllStudents() {
   const [isLoading, setLoading] = useState(true);
-  const [studentList,setStudentList] = useState([]);
+  const [studentList, setStudentList] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 10;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
 
-    const FetchData = async () => {
-      const url =
-        import.meta.env.REACT_APP_STUDENT_BASE_URL +
-        "Students/GetAllStudents";
-      setStudentList(await Get(url));
-    }    
-    FetchData();
+    
+    FetchData(1);
   }, []);
+
+  const FetchData = async (Page) => {
+    const url =
+      import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetAllStudents";
+      const data = await Get(url,Page);
+    setStudentList(data);
+  };
+
+  const handlePageChange = (page) => {
+    FetchData(page); // Fetch data for the selected page
+  };
 
   return (
     <>
-    { isLoading && <div id="preloader"></div> }
+      {isLoading && <div id="preloader"></div>}
       <div className="dashboard-content-one">
         <div className="breadcrumbs-area">
           <h3>Students</h3>
@@ -85,7 +96,10 @@ function AllStudents() {
                   />
                 </div>
                 <div className="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
-                  <button type="submit" className="fw-btn-fill btn-gradient-yellow">
+                  <button
+                    type="submit"
+                    className="fw-btn-fill btn-gradient-yellow"
+                  >
                     SEARCH
                   </button>
                 </div>
@@ -118,66 +132,82 @@ function AllStudents() {
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    (studentList && studentList.length) 
-                    && studentList.map((res) => {
+                  {studentList &&
+                    studentList.length &&
+                    studentList.map((res) => {
                       return (
                         <>
-                        <tr>
-                    <td>
-                      <div className="form-check">
-                        <input type="checkbox" className="form-check-input" />
-                        <label className="form-check-label">{res?.rollNo}</label>
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <img
-                        src={res?.studentPhotoBase64}
-                        alt="student"
-                      />
-                    </td>
-                    <td>{res?.fullName}</td>
-                    <td>{res?.gender}</td>
-                    <td>{res?.studentClass}</td>
-                    <td>{res?.section}</td>
-                    <td>Not Implemented Yet</td>
-                    <td>Not Implemented Yet</td>
-                    <td>{res?.dateOfBirth}</td>
-                    <td>{res?.phoneNo}</td>
-                    <td>{res?.email}</td>
-                    <td>
-                      <div className="dropdown">
-                        <a
-                          href="#"
-                          className="dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <span className="flaticon-more-button-of-three-dots"></span>
-                        </a>
-                        <div className="dropdown-menu dropdown-menu-right">
-                          <a className="dropdown-item" href="#">
-                            <i className="fas fa-times text-orange-red"></i>Close
-                          </a>
-                          <a className="dropdown-item" href="#">
-                            <i className="fas fa-cogs text-dark-pastel-green"></i>
-                            Edit
-                          </a>
-                          <a className="dropdown-item" href="#">
-                            <i className="fas fa-redo-alt text-orange-peel"></i>
-                            Refresh
-                          </a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                          <tr>
+                            <td>
+                              <div className="form-check">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                                <label className="form-check-label">
+                                  {res?.rollNo}
+                                </label>
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <img
+                                src={res?.studentPhotoBase64}
+                                alt="student"
+                              />
+                            </td>
+                            <td>{res?.fullName}</td>
+                            <td>{res?.gender}</td>
+                            <td>{res?.studentClass}</td>
+                            <td>{res?.section}</td>
+                            <td>Not Implemented Yet</td>
+                            <td>Not Implemented Yet</td>
+                            <td>{res?.dateOfBirth}</td>
+                            <td>{res?.phoneNo}</td>
+                            <td>{res?.email}</td>
+                            <td>
+                              <div className="dropdown">
+                                <a
+                                  href="#"
+                                  className="dropdown-toggle"
+                                  data-toggle="dropdown"
+                                  aria-expanded="false"
+                                >
+                                  <span className="flaticon-more-button-of-three-dots"></span>
+                                </a>
+                                <div className="dropdown-menu dropdown-menu-right">
+                                  <Link
+                                    className="dropdown-item"
+                                    to={
+                                      "/dashboard/student-detail/" + res.userId
+                                    }
+                                  >
+                                    <i className="fas fa-eye text-orange-red"></i>{" "}
+                                    View
+                                  </Link>
+                                  <Link className="dropdown-item" to="#">
+                                    <i className="fas fa-cogs text-dark-pastel-green"></i>{" "}
+                                    Edit
+                                  </Link>
+                                  <Link className="dropdown-item" to="#">
+                                    <i className="fas fa-redo-alt text-orange-peel"></i>{" "}
+                                    Refresh
+                                  </Link>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
                         </>
                       );
-                    })
-                  }
+                    })}
                 </tbody>
               </table>
             </div>
+
+            <Pagination
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
 

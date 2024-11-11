@@ -9,6 +9,7 @@ function Login() {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSeePassword, setIsSeePassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -69,6 +70,12 @@ function Login() {
   }
   //#endregion
 
+  //#region  Helpers
+  const handleSeePassword = () => {
+    setIsSeePassword(!isSeePassword)
+  }
+  //#endregion
+
   return (
     <>
           <ToastContainer
@@ -108,13 +115,13 @@ function Login() {
               <div className="form-group">
                 <label>Password</label>
                 <input
-                  type="text"
+                  type={isSeePassword ? 'password' : 'text'}
                   placeholder="Enter password"
                   className="form-control"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <i className="fas fa-lock"></i>
+                <i className="fas fa-lock" onClick={handleSeePassword}></i>
               </div>
               <div className="form-group d-flex align-items-center justify-content-between">
                 <div className="form-check" style={{ paddingLeft: "0" }}>
@@ -137,34 +144,6 @@ function Login() {
                 </button>
               </div>
             </form>
-            <div className="login-social">
-              <p>or sign in with</p>
-              <ul>
-                <li>
-                  <a href="#" className="bg-fb">
-                    <i className="fab fa-facebook-f"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="bg-twitter">
-                    <i className="fab fa-twitter"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="bg-gplus">
-                    <i className="fab fa-google-plus-g"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="bg-git">
-                    <i className="fab fa-github"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="sign-up">
-            Don't have an account ? <Link to="/signup">Signup now!</Link>
           </div>
         </div>
       </div>

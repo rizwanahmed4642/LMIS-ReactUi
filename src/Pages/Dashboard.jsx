@@ -422,11 +422,11 @@ function Dashboard() {
                         <i className="fas fa-angle-right"></i>All Students
                       </Link>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                       <Link to="/dashboard/student-detail" className="nav-link">
                         <i className="fas fa-angle-right"></i>Student Details
                       </Link>
-                    </li>
+                    </li> */}
                     <li className="nav-item">
                       <Link to="/dashboard/admission-form" className="nav-link">
                         <i className="fas fa-angle-right"></i>Admission Form
