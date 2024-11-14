@@ -27,26 +27,26 @@ function AdmissionForm() {
   const [studentClassList, setStudentClassList] = useState([]);
   const [admissionFormValues, setAdmissionFormValues] = useState({
     id: null,
-    firstName: '',
-    lastName: '',
-    genderTypeProfileId: '',
-    dateOfBirth: '',
-    email: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    genderTypeProfileId: "",
+    dateOfBirth: "",
+    email: "",
+    password: "",
     roleShortName: "STUDNT",
     studentCreateOrEditDto: {
       studentId: null,
-      rollNo: '',
-      bloodGroupTypeProfileId: '',
-      religionTypeProfileId: '',
-      StudentClassTypeProfileId: '',
-      StudentClassSectionTypeProfileId: '',
-      admissionId: '',
-      phoneNo: '',
-      shortBio: '',
-      StudentPhotoBase64: '',
-    }
-  })
+      rollNo: "",
+      bloodGroupTypeProfileId: "",
+      religionTypeProfileId: "",
+      StudentClassTypeProfileId: "",
+      StudentClassSectionTypeProfileId: "",
+      admissionId: "",
+      phoneNo: "",
+      shortBio: "",
+      StudentPhotoBase64: "",
+    },
+  });
   const navigate = useNavigate();
   const { id } = useParams();
   useEffect(() => {
@@ -105,7 +105,8 @@ function AdmissionForm() {
           base64String
         );
 
-        admissionFormValues.studentCreateOrEditDto.StudentPhotoBase64 = base64String;
+        admissionFormValues.studentCreateOrEditDto.StudentPhotoBase64 =
+          base64String;
       };
 
       reader.readAsDataURL(file); // Read the file as a data URL (Base64)
@@ -139,7 +140,7 @@ function AdmissionForm() {
       if (response) {
         resetForm();
         document.getElementById("StudentPhotoBase64").value = "";
-        navigate("/dashboard/all-students")
+        navigate("/dashboard/all-students");
       }
     },
   });
@@ -523,19 +524,27 @@ function AdmissionForm() {
                         {errors?.studentCreateOrEditDto?.StudentPhotoBase64}
                       </small>
                     )}
-                    
-                    
-                  {admissionFormValues && admissionFormValues.studentCreateOrEditDto?.StudentPhotoBase64 
-                    ? <img style={{
-                      width: "200px",
-                      height: "200px",
-                      objectFit: "cover",
-                      borderRadius: "5px",
-                      boxShadow: "1px 4px 7px 3px"
-                    }} src={admissionFormValues.studentCreateOrEditDto.StudentPhotoBase64} alt="Student" />
-                    : ''
-                  }
-                      
+
+                  {admissionFormValues &&
+                  admissionFormValues.studentCreateOrEditDto
+                    ?.StudentPhotoBase64 ? (
+                    <img
+                      style={{
+                        width: "200px",
+                        height: "200px",
+                        objectFit: "cover",
+                        borderRadius: "5px",
+                        boxShadow: "1px 4px 7px 3px",
+                      }}
+                      src={
+                        admissionFormValues.studentCreateOrEditDto
+                          .StudentPhotoBase64
+                      }
+                      alt="Student"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div className="col-12 form-group mg-t-8">
                   <button
@@ -545,13 +554,15 @@ function AdmissionForm() {
                   >
                     Save
                   </button>
-                  <button
-                    type="reset"
-                    className="btn-fill-lg bg-blue-dark btn-hover-yellow"
-                    onClick={handleResetForm}
-                  >
-                    Reset
-                  </button>
+                  {!id && (
+                    <button
+                      type="reset"
+                      className="btn-fill-lg bg-blue-dark btn-hover-yellow"
+                      onClick={handleResetForm}
+                    >
+                      Reset
+                    </button>
+                  )}
                 </div>
               </div>
             </form>

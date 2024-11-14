@@ -11,8 +11,8 @@ export async function Get(url) {
     return response?.data?.data;
 }
 
-export async function GetAllWithPagination(url, searchTerm, pageNo, pageSize) {
-    url = url + `?searchTerm=${searchTerm}&PageNo=${pageNo}&PageSize=${pageSize}`;
+export async function GetAllWithPagination(url, searchByName,searchByClass,searchByRollNo, pageNo, pageSize) {
+    url = url + `?searchByName=${searchByName}&searchByClass=${searchByClass}&searchByRollNo=${searchByRollNo}&PageNo=${pageNo}&PageSize=${pageSize}`;
     const response = await axiosInstance.get(url);
     return response?.data?.data;
 }

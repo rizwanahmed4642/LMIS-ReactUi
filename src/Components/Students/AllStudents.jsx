@@ -8,7 +8,9 @@ function AllStudents() {
   const [studentList, setStudentList] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [pageSize] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchByRollNo, setSearchByRollNo] = useState("");
+  const [searchByName, setSearchByName] = useState("");
+  const [searchByClass, setSearchByClass] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -22,10 +24,15 @@ function AllStudents() {
     debugger;
     const url =
       import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetAllStudents";
-    const data = await GetAllWithPagination(url, searchTerm, Page, pageSize);
+    const data = await GetAllWithPagination(url,searchByName,searchByClass,searchByRollNo, Page, pageSize);
     setStudentList(data);
     setTotalItems(data[0]?.totalCount);
   };
+
+  const searchStudentData = (e) => {
+    e.preventDefault();
+    FetchData(1);
+  }
 
   const handlePageChange = (page) => {
     FetchData(page); // Fetch data for the selected page
@@ -81,6 +88,8 @@ function AllStudents() {
                     type="text"
                     placeholder="Search by Roll ..."
                     className="form-control"
+                    value={searchByRollNo}
+                    onChange={(e) => setSearchByRollNo(e.target.value)}
                   />
                 </div>
                 <div className="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
@@ -88,6 +97,8 @@ function AllStudents() {
                     type="text"
                     placeholder="Search by Name ..."
                     className="form-control"
+                    value={searchByName}
+                    onChange={(e) => setSearchByName(e.target.value)}
                   />
                 </div>
                 <div className="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
@@ -95,12 +106,15 @@ function AllStudents() {
                     type="text"
                     placeholder="Search by Class ..."
                     className="form-control"
+                    value={searchByClass}
+                    onChange={(e) => setSearchByClass(e.target.value)}
                   />
                 </div>
                 <div className="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
                   <button
                     type="submit"
                     className="fw-btn-fill btn-gradient-yellow"
+                    onClick={searchStudentData}
                   >
                     SEARCH
                   </button>
