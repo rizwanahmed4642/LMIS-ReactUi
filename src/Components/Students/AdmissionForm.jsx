@@ -1,9 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "../../assets/css/datepicker.min.css";
 import "../../assets/css/select2.min.css";
 import React, { useState, useEffect } from "react";
-import { GetByShortName, Post } from "../../Services/student-service";
-import { bloodGroupShortName, classSectionShortName, genderShortName, religionShortName, studentClassShortName } from "../../Constants/ShortNameConstants";
+import {
+  GetByQueryId,
+  GetByShortName,
+  Post,
+} from "../../Services/student-service";
+import {
+  bloodGroupShortName,
+  classSectionShortName,
+  genderShortName,
+  religionShortName,
+  studentClassShortName,
+} from "../../Constants/ShortNameConstants";
 import { ErrorMessage, useFormik } from "formik";
 import { StudentAdmissionFormSchema } from "../../Schemas";
 import { StudentAdmissionForminitialValue } from "../../Schemas/SchemaInitialValues";
@@ -15,12 +25,48 @@ function AdmissionForm() {
   const [religionList, setReligionList] = useState([]);
   const [bloodGroupList, setBloodGroupList] = useState([]);
   const [studentClassList, setStudentClassList] = useState([]);
+  const [admissionFormValues, setAdmissionFormValues] = useState({
+    id: null,
+    firstName: '',
+    lastName: '',
+    genderTypeProfileId: '',
+    dateOfBirth: '',
+    email: '',
+    password: '',
+    roleShortName: "STUDNT",
+    studentCreateOrEditDto: {
+      studentId: null,
+      rollNo: '',
+      bloodGroupTypeProfileId: '',
+      religionTypeProfileId: '',
+      StudentClassTypeProfileId: '',
+      StudentClassSectionTypeProfileId: '',
+      admissionId: '',
+      phoneNo: '',
+      shortBio: '',
+      StudentPhotoBase64: '',
+    }
+  })
+  const navigate = useNavigate();
+  const { id } = useParams();
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
 
     const fetchData = async () => {
+      if (id) {
+        const url =
+          import.meta.env.REACT_APP_STUDENT_BASE_URL +
+          "Students/GetStudentsById";
+        const singleRecord = await GetByQueryId(url, id);
+        debugger;
+        if (singleRecord) {
+          const formValue = StudentAdmissionForminitialValue(singleRecord);
+          setAdmissionFormValues(formValue);
+        }
+      }
+
       const url =
         import.meta.env.REACT_APP_BASE_URL +
         "Profiles/GetProfilesByProfileTypes";
@@ -58,6 +104,8 @@ function AdmissionForm() {
           "studentCreateOrEditDto.StudentPhotoBase64",
           base64String
         );
+
+        admissionFormValues.studentCreateOrEditDto.StudentPhotoBase64 = base64String;
       };
 
       reader.readAsDataURL(file); // Read the file as a data URL (Base64)
@@ -67,7 +115,7 @@ function AdmissionForm() {
   const handleResetForm = () => {
     resetForm();
     document.getElementById("StudentPhotoBase64").value = "";
-  }
+  };
 
   const {
     values,
@@ -78,10 +126,11 @@ function AdmissionForm() {
     handleSubmit,
     handleBlur,
     resetForm,
-    touched
+    touched,
   } = useFormik({
-    initialValues: StudentAdmissionForminitialValue,
+    initialValues: admissionFormValues,
     validationSchema: StudentAdmissionFormSchema,
+    enableReinitialize: true,
     onSubmit: async (value) => {
       const url =
         import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/CreateOrEdit";
@@ -90,6 +139,7 @@ function AdmissionForm() {
       if (response) {
         resetForm();
         document.getElementById("StudentPhotoBase64").value = "";
+        navigate("/dashboard/all-students")
       }
     },
   });
@@ -151,7 +201,11 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                  { (touched.firstName && errors.firstName) && <small className="input-error-message">{ errors.firstName }</small> }
+                  {touched.firstName && errors.firstName && (
+                    <small className="input-error-message">
+                      {errors.firstName}
+                    </small>
+                  )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="lastName">Last Name *</label>
@@ -165,7 +219,11 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    { (touched.lastName && errors.lastName) && <small className="input-error-message">{ errors.lastName }</small> }
+                  {touched.lastName && errors.lastName && (
+                    <small className="input-error-message">
+                      {errors.lastName}
+                    </small>
+                  )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="genderTypeProfileId">Gender *</label>
@@ -188,7 +246,12 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
-                  { (touched.genderTypeProfileId && errors.genderTypeProfileId) && <small className="input-error-message">{ errors.genderTypeProfileId }</small> }
+                  {touched.genderTypeProfileId &&
+                    errors.genderTypeProfileId && (
+                      <small className="input-error-message">
+                        {errors.genderTypeProfileId}
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="dateOfBirth">Date Of Birth *</label>
@@ -205,7 +268,11 @@ function AdmissionForm() {
                   />
                   <i className="far fa-calendar-alt"></i>
 
-                  { (touched.dateOfBirth && errors.dateOfBirth) && <small className="input-error-message">{ errors.dateOfBirth }</small> }
+                  {touched.dateOfBirth && errors.dateOfBirth && (
+                    <small className="input-error-message">
+                      {errors.dateOfBirth}
+                    </small>
+                  )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="rollNo">Roll</label>
@@ -219,7 +286,12 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                  { (touched?.studentCreateOrEditDto?.rollNo && errors?.studentCreateOrEditDto?.rollNo) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.rollNo }</small> }
+                  {touched?.studentCreateOrEditDto?.rollNo &&
+                    errors?.studentCreateOrEditDto?.rollNo && (
+                      <small className="input-error-message">
+                        {errors?.studentCreateOrEditDto?.rollNo}
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="bloodGroupTypeProfileId">Blood Group *</label>
@@ -244,7 +316,15 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
-                  { (touched?.studentCreateOrEditDto?.bloodGroupTypeProfileId && errors?.studentCreateOrEditDto?.bloodGroupTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.bloodGroupTypeProfileId }</small> }
+                  {touched?.studentCreateOrEditDto?.bloodGroupTypeProfileId &&
+                    errors?.studentCreateOrEditDto?.bloodGroupTypeProfileId && (
+                      <small className="input-error-message">
+                        {
+                          errors?.studentCreateOrEditDto
+                            ?.bloodGroupTypeProfileId
+                        }
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="religionTypeProfileId">Religion *</label>
@@ -267,7 +347,12 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
-                  { (touched?.studentCreateOrEditDto?.religionTypeProfileId && errors?.studentCreateOrEditDto?.religionTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.religionTypeProfileId }</small> }
+                  {touched?.studentCreateOrEditDto?.religionTypeProfileId &&
+                    errors?.studentCreateOrEditDto?.religionTypeProfileId && (
+                      <small className="input-error-message">
+                        {errors?.studentCreateOrEditDto?.religionTypeProfileId}
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="email">E-Mail</label>
@@ -281,7 +366,11 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                  { (touched.email && errors.email) && <small className="input-error-message">{ errors.email }</small> }
+                  {touched.email && errors.email && (
+                    <small className="input-error-message">
+                      {errors.email}
+                    </small>
+                  )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="StudentClassTypeProfileId">Class *</label>
@@ -307,7 +396,16 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
-                  { (touched?.studentCreateOrEditDto?.StudentClassTypeProfileId && errors?.studentCreateOrEditDto?.StudentClassTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.StudentClassTypeProfileId }</small> }
+                  {touched?.studentCreateOrEditDto?.StudentClassTypeProfileId &&
+                    errors?.studentCreateOrEditDto
+                      ?.StudentClassTypeProfileId && (
+                      <small className="input-error-message">
+                        {
+                          errors?.studentCreateOrEditDto
+                            ?.StudentClassTypeProfileId
+                        }
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="StudentClassSectionTypeProfileId">
@@ -335,7 +433,17 @@ function AdmissionForm() {
                         </option>
                       ))}
                   </select>
-                  { (touched?.studentCreateOrEditDto?.StudentClassSectionTypeProfileId && errors?.studentCreateOrEditDto?.StudentClassSectionTypeProfileId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.StudentClassSectionTypeProfileId }</small> }
+                  {touched?.studentCreateOrEditDto
+                    ?.StudentClassSectionTypeProfileId &&
+                    errors?.studentCreateOrEditDto
+                      ?.StudentClassSectionTypeProfileId && (
+                      <small className="input-error-message">
+                        {
+                          errors?.studentCreateOrEditDto
+                            ?.StudentClassSectionTypeProfileId
+                        }
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="admissionId">Admission ID</label>
@@ -349,7 +457,12 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                  { (touched?.studentCreateOrEditDto?.admissionId && errors?.studentCreateOrEditDto?.admissionId) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.admissionId }</small> }
+                  {touched?.studentCreateOrEditDto?.admissionId &&
+                    errors?.studentCreateOrEditDto?.admissionId && (
+                      <small className="input-error-message">
+                        {errors?.studentCreateOrEditDto?.admissionId}
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="phoneNo">Phone</label>
@@ -363,7 +476,12 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                  { (touched?.studentCreateOrEditDto?.phoneNo && errors?.studentCreateOrEditDto?.phoneNo) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.phoneNo }</small> }
+                  {touched?.studentCreateOrEditDto?.phoneNo &&
+                    errors?.studentCreateOrEditDto?.phoneNo && (
+                      <small className="input-error-message">
+                        {errors?.studentCreateOrEditDto?.phoneNo}
+                      </small>
+                    )}
                 </div>
                 <div className="col-lg-6 col-12 form-group">
                   <label htmlFor="shortBio">Short BIO</label>
@@ -377,7 +495,12 @@ function AdmissionForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   ></textarea>
-                  { (touched?.studentCreateOrEditDto?.shortBio && errors?.studentCreateOrEditDto?.shortBio) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.shortBio }</small> }
+                  {touched?.studentCreateOrEditDto?.shortBio &&
+                    errors?.studentCreateOrEditDto?.shortBio && (
+                      <small className="input-error-message">
+                        {errors?.studentCreateOrEditDto?.shortBio}
+                      </small>
+                    )}
                 </div>
                 <div className="col-lg-6 col-12 form-group mg-t-30">
                   <label
@@ -394,7 +517,25 @@ function AdmissionForm() {
                     onChange={(e) => uploadPhoto(e)}
                     onBlur={handleBlur}
                   />
-                  { (touched?.studentCreateOrEditDto?.StudentPhotoBase64 && errors?.studentCreateOrEditDto?.StudentPhotoBase64) && <small className="input-error-message">{ errors?.studentCreateOrEditDto?.StudentPhotoBase64 }</small> }
+                  {touched?.studentCreateOrEditDto?.StudentPhotoBase64 &&
+                    errors?.studentCreateOrEditDto?.StudentPhotoBase64 && (
+                      <small className="input-error-message">
+                        {errors?.studentCreateOrEditDto?.StudentPhotoBase64}
+                      </small>
+                    )}
+                    
+                    
+                  {admissionFormValues && admissionFormValues.studentCreateOrEditDto?.StudentPhotoBase64 
+                    ? <img style={{
+                      width: "200px",
+                      height: "200px",
+                      objectFit: "cover",
+                      borderRadius: "5px",
+                      boxShadow: "1px 4px 7px 3px"
+                    }} src={admissionFormValues.studentCreateOrEditDto.StudentPhotoBase64} alt="Student" />
+                    : ''
+                  }
+                      
                 </div>
                 <div className="col-12 form-group mg-t-8">
                   <button

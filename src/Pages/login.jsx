@@ -9,7 +9,7 @@ function Login() {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isSeePassword, setIsSeePassword] = useState(false);
+  const [isSeePassword, setIsSeePassword] = useState(true);
 
   const navigate = useNavigate();
 
@@ -98,7 +98,7 @@ function Login() {
         <div className="login-page-content">
           <div className="login-box">
             <div className="item-logo">
-              <img src="src/assets/img/logo2.png" alt="logo" />
+              <img src="src/assets/img/lms.png" alt="logo" />
             </div>
             <form action="index.html" className="login-form" onSubmit={handleSubmit}>
               <div className="form-group">

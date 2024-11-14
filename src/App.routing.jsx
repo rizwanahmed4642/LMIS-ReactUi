@@ -61,7 +61,7 @@ function AppRouting() {
             {/* Students */}
             <Route path="all-students" element={<AllStudents />} />
             <Route path="student-detail/:id" element={<StudentDetail />} />
-            <Route path="admission-form" element={<AdmissionForm />} />
+            <Route path="admission-form/:id?" element={<AdmissionForm />} />
             <Route path="student-promotion" element={<StudentPromotion />} />
             {/* Teachers */}
             <Route path="all-teachers" element={<AllTeachers />} />

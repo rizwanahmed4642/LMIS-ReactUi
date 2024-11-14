@@ -8,24 +8,23 @@ function AllStudents() {
   const [studentList, setStudentList] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [pageSize] = useState(10);
-  const [searchTerm,setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
 
-    
     FetchData(1);
   }, []);
 
   const FetchData = async (Page) => {
-    debugger
+    debugger;
     const url =
       import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetAllStudents";
-      const data = await GetAllWithPagination(url, searchTerm, Page, pageSize);
-      setStudentList(data);
-      setTotalItems(data[0]?.totalCount);
+    const data = await GetAllWithPagination(url, searchTerm, Page, pageSize);
+    setStudentList(data);
+    setTotalItems(data[0]?.totalCount);
   };
 
   const handlePageChange = (page) => {
@@ -135,71 +134,67 @@ function AllStudents() {
                   </tr>
                 </thead>
                 <tbody>
-                  {studentList &&
-                    studentList.length &&
-                    studentList.map((res) => {
+                  {(studentList &&
+                    studentList.length > 0) &&
+                    studentList.map((res, index) => {
                       return (
-                        <>
-                          <tr>
-                            <td>
-                              <div className="form-check">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                />
-                                <label className="form-check-label">
-                                  {res?.rollNo}
-                                </label>
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <img
-                                src={res?.studentPhotoBase64}
-                                alt="student"
+                        <tr key={index}>
+                          <td key={index + 2}>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
                               />
-                            </td>
-                            <td>{res?.fullName}</td>
-                            <td>{res?.gender}</td>
-                            <td>{res?.studentClass}</td>
-                            <td>{res?.section}</td>
-                            <td>Not Implemented Yet</td>
-                            <td>Not Implemented Yet</td>
-                            <td>{res?.dateOfBirth}</td>
-                            <td>{res?.phoneNo}</td>
-                            <td>{res?.email}</td>
-                            <td>
-                              <div className="dropdown">
-                                <a
-                                  href="#"
-                                  className="dropdown-toggle"
-                                  data-toggle="dropdown"
-                                  aria-expanded="false"
+                              <label className="form-check-label">
+                                {res?.rollNo}
+                              </label>
+                            </div>
+                          </td>
+                          <td className="text-center">
+                            <img src={res?.studentPhotoBase64} alt="student" />
+                          </td>
+                          <td>{res?.fullName}</td>
+                          <td>{res?.gender}</td>
+                          <td>{res?.studentClass}</td>
+                          <td>{res?.section}</td>
+                          <td>Not Implemented Yet</td>
+                          <td>Not Implemented Yet</td>
+                          <td>{res?.dateOfBirth}</td>
+                          <td>{res?.phoneNo}</td>
+                          <td>{res?.email}</td>
+                          <td>
+                            <div className="dropdown">
+                              <a
+                                href="#"
+                                className="dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                              >
+                                <span className="flaticon-more-button-of-three-dots"></span>
+                              </a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <Link
+                                  className="dropdown-item"
+                                  to={"/dashboard/student-detail/" + res.userId}
                                 >
-                                  <span className="flaticon-more-button-of-three-dots"></span>
-                                </a>
-                                <div className="dropdown-menu dropdown-menu-right">
-                                  <Link
-                                    className="dropdown-item"
-                                    to={
-                                      "/dashboard/student-detail/" + res.userId
-                                    }
-                                  >
-                                    <i className="fas fa-eye text-orange-red"></i>{" "}
-                                    View
-                                  </Link>
-                                  <Link className="dropdown-item" to="#">
-                                    <i className="fas fa-cogs text-dark-pastel-green"></i>{" "}
-                                    Edit
-                                  </Link>
-                                  <Link className="dropdown-item" to="#">
-                                    <i className="fas fa-redo-alt text-orange-peel"></i>{" "}
-                                    Refresh
-                                  </Link>
-                                </div>
+                                  <i className="fas fa-eye text-orange-red"></i>{" "}
+                                  View
+                                </Link>
+                                <Link
+                                  className="dropdown-item"
+                                  to={`/dashboard/admission-form/${res.userId}`}
+                                >
+                                  <i className="fas fa-cogs text-dark-pastel-green"></i>{" "}
+                                  Edit
+                                </Link>
+                                <Link className="dropdown-item" to="#">
+                                  <i className="fas fa-redo-alt text-orange-peel"></i>{" "}
+                                  Refresh
+                                </Link>
                               </div>
-                            </td>
-                          </tr>
-                        </>
+                            </div>
+                          </td>
+                        </tr>
                       );
                     })}
                 </tbody>
