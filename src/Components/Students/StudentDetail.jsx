@@ -61,9 +61,9 @@ function StudentDetail() {
                  <a className="dropdown-item" href="#">
                    <i className="fas fa-times text-orange-red"></i>Close
                  </a>
-                 <a className="dropdown-item" href="#">
+                 <Link className="dropdown-item" to={`/dashboard/admission-form/${studentId?.id}`}>
                    <i className="fas fa-cogs text-dark-pastel-green"></i>Edit
-                 </a>
+                 </Link>
                  <a className="dropdown-item" href="#">
                    <i className="fas fa-redo-alt text-orange-peel"></i>Refresh
                  </a>
