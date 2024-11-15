@@ -32,5 +32,9 @@ export async function GetByShortName(url,shortName) {
     return response?.data?.data;
 }
 
-
+export async function Delete(url, uid) {
+    debugger
+    const response = await axiosInstance.post(url + `?id=${uid}`, null)
+    return response?.data;
+}
 

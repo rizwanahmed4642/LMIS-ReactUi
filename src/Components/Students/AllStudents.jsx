@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Get, GetAllWithPagination } from "../../Services/student-service";
+import { Delete, Get, GetAllWithPagination } from "../../Services/student-service";
 import { Link } from "react-router-dom";
 import Pagination from "../../shared/Pagination";
 
@@ -37,6 +37,16 @@ function AllStudents() {
   const handlePageChange = (page) => {
     FetchData(page); // Fetch data for the selected page
   };
+
+  const DeleteStudent = async (uId) => {
+    debugger
+    const url =
+    import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/DELETESTUDENTRECORD";
+    const data = await Delete(url, uId); 
+    if (data) {
+      FetchData(1);
+    }
+  }
 
   return (
     <>
@@ -201,9 +211,9 @@ function AllStudents() {
                                   <i className="fas fa-cogs text-dark-pastel-green"></i>{" "}
                                   Edit
                                 </Link>
-                                <Link className="dropdown-item" to="#">
-                                  <i className="fas fa-redo-alt text-orange-peel"></i>{" "}
-                                  Refresh
+                                <Link className="dropdown-item" onClick={() => DeleteStudent(res.userId)}>
+                                  <i className="fas fa-trash"></i>{" "}
+                                  Delete
                                 </Link>
                               </div>
                             </div>
