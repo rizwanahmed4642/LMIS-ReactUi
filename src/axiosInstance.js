@@ -8,6 +8,7 @@ const axiosInstance = axios.create({
 // For Request
 
 axiosInstance.interceptors.request.use((config) => {
+  debugger
   const token = localStorage.getItem("Token");
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
@@ -18,6 +19,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => {
+    debugger
     if (response.data?.statusCode == 201) {
       toast.success("Record Saved Successfully!", {
         position: "top-right",
@@ -61,6 +63,17 @@ axiosInstance.interceptors.response.use(
         draggable: true,
       });
     } else if(response?.data?.statusCode == 200){
+      debugger
+      if (response?.data?.message) {
+        toast.success(response?.data?.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
       return response;
     } else {
       toast.error("Internal Server Error.", {
@@ -76,6 +89,7 @@ axiosInstance.interceptors.response.use(
      // Ensure the response is returned to the calling function
      return response;
   },(err) => {
+    debugger
     if (err.status == 401) {
         toast.error("Your Session is Expired Login Again..!", {
             position: "top-right",

@@ -21,7 +21,7 @@ function AllStudents() {
   }, []);
 
   const FetchData = async (Page) => {
-    debugger;
+    // debugger;
     const url =
       import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetAllStudents";
     const data = await GetAllWithPagination(url,searchByName,searchByClass,searchByRollNo, Page, pageSize);
@@ -39,7 +39,7 @@ function AllStudents() {
   };
 
   const DeleteStudent = async (uId) => {
-    debugger
+    // debugger
     const url =
     import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/DELETESTUDENTRECORD";
     const data = await Delete(url, uId); 
@@ -85,7 +85,7 @@ function AllStudents() {
                   <a className="dropdown-item" href="#">
                     <i className="fas fa-cogs text-dark-pastel-green"></i>Edit
                   </a>
-                  <a className="dropdown-item" href="#">
+                  <a className="dropdown-item" onClick={() => FetchData(1)}>
                     <i className="fas fa-redo-alt text-orange-peel"></i>Refresh
                   </a>
                 </div>
