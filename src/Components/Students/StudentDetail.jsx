@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { GetByQueryId } from "../../Services/student-service";
+import html2pdf from "html2pdf.js";
 
 function StudentDetail() {
   const [isLoading, setLoading] = useState(true);
@@ -25,6 +26,11 @@ function StudentDetail() {
     FetchData();
     console.log(student)
   }, []);
+
+  const gendratePdf = () => {
+    const element = document.querySelector("#student-detail");
+    html2pdf(element)
+  }
 
   return (
     <>
@@ -70,22 +76,22 @@ function StudentDetail() {
                </div>
              </div>
            </div>
-           <div className="single-info-details">
+           <div className="single-info-details" id="student-detail">
              <div className="item-img">
                <img src={student?.studentPhotoBase64} alt="student" />
              </div>
              <div className="item-content">
                <div className="header-inline item-header">
                  <h3 className="text-dark-medium font-medium">Jessia Rose</h3>
-                 <div className="header-elements">
+                 <div className="header-elements" id="student-detail-button">
                    <ul>
                      <li>
-                       <a href="#">
+                       <Link  to={`/dashboard/admission-form/${studentId?.id}`}>
                          <i className="far fa-edit"></i>
-                       </a>
+                       </Link>
                      </li>
                      <li>
-                       <a href="#">
+                       <a onClick={gendratePdf}>
                          <i className="fas fa-print"></i>
                        </a>
                      </li>
