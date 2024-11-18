@@ -24,7 +24,7 @@ function AllStudents() {
     // debugger;
     const url =
       import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetAllStudents";
-    const data = await GetAllWithPagination(url,searchByName,searchByClass,searchByRollNo, Page, pageSize);
+    const data = await GetAllWithPagination(url,"searchByName",searchByName,"searchByClass",searchByClass,"searchByRollNo",searchByRollNo, Page, pageSize);
     setStudentList(data);
     setTotalItems(data[0]?.totalCount);
   };

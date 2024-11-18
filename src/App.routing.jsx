@@ -66,7 +66,7 @@ function AppRouting() {
             {/* Teachers */}
             <Route path="all-teachers" element={<AllTeachers />} />
             <Route path="teacher-detail" element={<TeacherDetail />} />
-            <Route path="add-teacher" element={<AddNewTeacher />} />
+            <Route path="add-teacher/:id?" element={<AddNewTeacher />} />
             <Route path="teacher-payment" element={<TeacherPayment />} />
             {/* Parents */}
             <Route path="all-parents" element={<AllParents />} />
