@@ -479,11 +479,6 @@ function Dashboard() {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/dashboard/parents-detail" className="nav-link">
-                        <i className="fas fa-angle-right"></i>Parents Details
-                      </Link>
-                    </li>
-                    <li className="nav-item">
                       <Link to="/dashboard/add-parents" className="nav-link">
                         <i className="fas fa-angle-right"></i>Add Parent
                       </Link>

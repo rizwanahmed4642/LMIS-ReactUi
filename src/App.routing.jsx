@@ -70,8 +70,8 @@ function AppRouting() {
             <Route path="teacher-payment" element={<TeacherPayment />} />
             {/* Parents */}
             <Route path="all-parents" element={<AllParents />} />
-            <Route path="parents-detail" element={<ParentsDetail />} />
-            <Route path="add-parents" element={<AddParent />} />
+            <Route path="parents-detail/:id" element={<ParentsDetail />} />
+            <Route path="add-parents/:id?" element={<AddParent />} />
             {/* Library */}
             <Route path="all-books" element={<AllBooks />} />
             <Route path="add-books" element={<AddBook />} />

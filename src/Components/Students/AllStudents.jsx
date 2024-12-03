@@ -181,8 +181,8 @@ function AllStudents() {
                           <td>{res?.gender}</td>
                           <td>{res?.studentClass}</td>
                           <td>{res?.section}</td>
-                          <td>Not Implemented Yet</td>
-                          <td>Not Implemented Yet</td>
+                          <td>{res?.fatherName}</td>
+                          <td>{res?.address}</td>
                           <td>{res?.dateOfBirth}</td>
                           <td>{res?.phoneNo}</td>
                           <td>{res?.email}</td>

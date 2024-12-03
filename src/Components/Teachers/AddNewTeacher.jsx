@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { GetByQueryId, GetByShortName, Post } from "../../Services/student-service";
+import {
+  GetByQueryId,
+  GetByShortName,
+  Post,
+} from "../../Services/student-service";
 import {
   bloodGroupShortName,
   classSectionShortName,
@@ -20,7 +24,7 @@ function AddNewTeacher() {
   const [religionList, setReligionList] = useState([]);
   const [bloodGroupList, setBloodGroupList] = useState([]);
   const [studentClassList, setStudentClassList] = useState([]);
-  const [subjectList, setSubjectList] = useState([]); 
+  const [subjectList, setSubjectList] = useState([]);
   const [teacherFormValues, setTeacherFormValues] = useState({
     id: null,
     firstName: "",
@@ -114,12 +118,10 @@ function AddNewTeacher() {
     }
   };
 
-  
   const handleResetForm = () => {
     resetForm();
     document.getElementById("teacherPhotoBase64").value = "";
   };
-
 
   const {
     values,
@@ -142,7 +144,7 @@ function AddNewTeacher() {
       const response = await Post(url, value);
       if (response) {
         resetForm();
-        debugger
+        debugger;
         document.getElementById("teacherPhotoBase64").value = "";
         navigate("/dashboard/all-teachers");
       }
@@ -224,7 +226,7 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    {touched.lastName && errors.lastName && (
+                  {touched.lastName && errors.lastName && (
                     <small className="input-error-message">
                       {errors.lastName}
                     </small>
@@ -249,11 +251,12 @@ function AddNewTeacher() {
                         </option>
                       ))}
                   </select>
-                  {touched.genderTypeProfileId && errors.genderTypeProfileId && (
-                    <small className="input-error-message">
-                      {errors.genderTypeProfileId}
-                    </small>
-                  )}
+                  {touched.genderTypeProfileId &&
+                    errors.genderTypeProfileId && (
+                      <small className="input-error-message">
+                        {errors.genderTypeProfileId}
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label>Date Of Birth *</label>
@@ -286,17 +289,21 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    {touched?.teacherCreateOrEditDto?.idNo && errors?.teacherCreateOrEditDto?.idNo && (
-                    <small className="input-error-message">
-                      {errors?.teacherCreateOrEditDto?.idNo}
-                    </small>
-                  )}
+                  {touched?.teacherCreateOrEditDto?.idNo &&
+                    errors?.teacherCreateOrEditDto?.idNo && (
+                      <small className="input-error-message">
+                        {errors?.teacherCreateOrEditDto?.idNo}
+                      </small>
+                    )}
                 </div>
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label>Blood Group *</label>
                   <select
                     className="select2 form-control"
-                    value={values.teacherCreateOrEditDto.bloodGroupTypeProfileId ?? ""}
+                    value={
+                      values.teacherCreateOrEditDto.bloodGroupTypeProfileId ??
+                      ""
+                    }
                     id="teacherCreateOrEditDto.bloodGroupTypeProfileId"
                     name="teacherCreateOrEditDto.bloodGroupTypeProfileId"
                     onChange={handleChange}
@@ -325,7 +332,9 @@ function AddNewTeacher() {
                   <label>Religion *</label>
                   <select
                     className="select2 form-control"
-                    value={values.teacherCreateOrEditDto.religionTypeProfileId ?? ""}
+                    value={
+                      values.teacherCreateOrEditDto.religionTypeProfileId ?? ""
+                    }
                     id="teacherCreateOrEditDto.religionTypeProfileId"
                     name="teacherCreateOrEditDto.religionTypeProfileId"
                     onChange={handleChange}
@@ -343,10 +352,7 @@ function AddNewTeacher() {
                   {touched?.teacherCreateOrEditDto?.religionTypeProfileId &&
                     errors?.teacherCreateOrEditDto?.religionTypeProfileId && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.religionTypeProfileId
-                        }
+                        {errors?.teacherCreateOrEditDto?.religionTypeProfileId}
                       </small>
                     )}
                 </div>
@@ -362,7 +368,7 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    {touched.email && errors.email && (
+                  {touched.email && errors.email && (
                     <small className="input-error-message">
                       {errors.email}
                     </small>
@@ -372,7 +378,9 @@ function AddNewTeacher() {
                   <label>Class *</label>
                   <select
                     className="select2 form-control"
-                    value={values.teacherCreateOrEditDto.classTypeProfileId ?? ""}
+                    value={
+                      values.teacherCreateOrEditDto.classTypeProfileId ?? ""
+                    }
                     id="teacherCreateOrEditDto.classTypeProfileId"
                     name="teacherCreateOrEditDto.classTypeProfileId"
                     onChange={handleChange}
@@ -390,10 +398,7 @@ function AddNewTeacher() {
                   {touched?.teacherCreateOrEditDto?.classTypeProfileId &&
                     errors?.teacherCreateOrEditDto?.classTypeProfileId && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.classTypeProfileId
-                        }
+                        {errors?.teacherCreateOrEditDto?.classTypeProfileId}
                       </small>
                     )}
                 </div>
@@ -401,7 +406,9 @@ function AddNewTeacher() {
                   <label>Section *</label>
                   <select
                     className="select2 form-control"
-                    value={values.teacherCreateOrEditDto.sectionTypeProfileId ?? ""}
+                    value={
+                      values.teacherCreateOrEditDto.sectionTypeProfileId ?? ""
+                    }
                     id="teacherCreateOrEditDto.sectionTypeProfileId"
                     name="teacherCreateOrEditDto.sectionTypeProfileId"
                     onChange={handleChange}
@@ -419,10 +426,7 @@ function AddNewTeacher() {
                   {touched?.teacherCreateOrEditDto?.sectionTypeProfileId &&
                     errors?.teacherCreateOrEditDto?.sectionTypeProfileId && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.sectionTypeProfileId
-                        }
+                        {errors?.teacherCreateOrEditDto?.sectionTypeProfileId}
                       </small>
                     )}
                 </div>
@@ -431,7 +435,9 @@ function AddNewTeacher() {
                   <label>Subject *</label>
                   <select
                     className="select2 form-control"
-                    value={values.teacherCreateOrEditDto.subjectTypeProfileId ?? ""}
+                    value={
+                      values.teacherCreateOrEditDto.subjectTypeProfileId ?? ""
+                    }
                     id="teacherCreateOrEditDto.subjectTypeProfileId"
                     name="teacherCreateOrEditDto.subjectTypeProfileId"
                     onChange={handleChange}
@@ -449,10 +455,7 @@ function AddNewTeacher() {
                   {touched?.teacherCreateOrEditDto?.subjectTypeProfileId &&
                     errors?.teacherCreateOrEditDto?.subjectTypeProfileId && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.subjectTypeProfileId
-                        }
+                        {errors?.teacherCreateOrEditDto?.subjectTypeProfileId}
                       </small>
                     )}
                 </div>
@@ -469,13 +472,10 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    {touched?.teacherCreateOrEditDto?.salary &&
+                  {touched?.teacherCreateOrEditDto?.salary &&
                     errors?.teacherCreateOrEditDto?.salary && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.salary
-                        }
+                        {errors?.teacherCreateOrEditDto?.salary}
                       </small>
                     )}
                 </div>
@@ -492,13 +492,10 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    {touched?.teacherCreateOrEditDto?.address &&
+                  {touched?.teacherCreateOrEditDto?.address &&
                     errors?.teacherCreateOrEditDto?.address && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.address
-                        }
+                        {errors?.teacherCreateOrEditDto?.address}
                       </small>
                     )}
                 </div>
@@ -514,13 +511,10 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                                    {touched?.teacherCreateOrEditDto?.phoneNo &&
+                  {touched?.teacherCreateOrEditDto?.phoneNo &&
                     errors?.teacherCreateOrEditDto?.phoneNo && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.phoneNo
-                        }
+                        {errors?.teacherCreateOrEditDto?.phoneNo}
                       </small>
                     )}
                 </div>
@@ -536,13 +530,10 @@ function AddNewTeacher() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   ></textarea>
-                                    {touched?.teacherCreateOrEditDto?.shortBio &&
+                  {touched?.teacherCreateOrEditDto?.shortBio &&
                     errors?.teacherCreateOrEditDto?.shortBio && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.shortBio
-                        }
+                        {errors?.teacherCreateOrEditDto?.shortBio}
                       </small>
                     )}
                 </div>
@@ -561,15 +552,11 @@ function AddNewTeacher() {
                   {touched?.teacherCreateOrEditDto?.teacherPhotoBase64 &&
                     errors?.teacherCreateOrEditDto?.teacherPhotoBase64 && (
                       <small className="input-error-message">
-                        {
-                          errors?.teacherCreateOrEditDto
-                            ?.teacherPhotoBase64
-                        }
+                        {errors?.teacherCreateOrEditDto?.teacherPhotoBase64}
                       </small>
                     )}
 
-
-{teacherFormValues &&
+                  {teacherFormValues &&
                   teacherFormValues.teacherCreateOrEditDto
                     ?.teacherPhotoBase64 ? (
                     <img

@@ -1,6 +1,5 @@
 
 export const StudentAdmissionForminitialValue = (input) => {
-  debugger
   return {
     id: input?.id ?? null,
     firstName: input?.firstName ?? '',
@@ -27,7 +26,6 @@ export const StudentAdmissionForminitialValue = (input) => {
 
 
 export const TeacherFormInitialValue = (input) => {
-  debugger
   return {
     id: input?.userId ?? null,
     firstName: input?.firstName ?? "",
@@ -50,6 +48,29 @@ export const TeacherFormInitialValue = (input) => {
       phoneNo: input?.phoneNo ?? "",
       shortBio: input?.shortBio ?? "",
       teacherPhotoBase64: input?.teacherPhotoBase64 ?? "",
+    },
+  };
+}
+
+export const ParentFormInitialValue = (input) => {
+  return {
+    id: input?.id ?? null,
+    firstName: input?.firstName ?? "",
+    lastName: input?.lastName ?? "",
+    genderTypeProfileId: input?.genderTypeProfileId ?? "",
+    email: input?.email ?? '',
+    roleShortName: input?.roleShortName ?? "PARENT",
+    parentCreateOrEditDto: {
+      parentId: input?.parentId ?? null,
+      occupation: input?.occupation ?? "",
+      motherName: input?.motherName ?? "",
+      idno: input?.idNo ?? "",
+      bloodGroupTypeProfileId: input?.bloodGroupTypeProfileId ?? "",
+      religionTypeProfileId: input?.religionTypeProfileId ?? "",
+      address: input?.address ?? "",
+      phoneNo: input?.phoneNo ?? "",
+      shortBio: input?.shortBio ?? 0,
+      parentPhotoBase64: input?.parentPhotoBase64 ?? "",
     },
   };
 }

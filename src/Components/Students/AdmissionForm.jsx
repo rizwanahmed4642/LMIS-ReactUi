@@ -3,6 +3,7 @@ import "../../assets/css/datepicker.min.css";
 import "../../assets/css/select2.min.css";
 import React, { useState, useEffect } from "react";
 import {
+  Get,
   GetByQueryId,
   GetByShortName,
   Post,
@@ -25,6 +26,7 @@ function AdmissionForm() {
   const [religionList, setReligionList] = useState([]);
   const [bloodGroupList, setBloodGroupList] = useState([]);
   const [studentClassList, setStudentClassList] = useState([]);
+  const [parentList, setParentList] = useState([]);
   const [admissionFormValues, setAdmissionFormValues] = useState({
     id: null,
     firstName: "",
@@ -36,6 +38,7 @@ function AdmissionForm() {
     roleShortName: "STUDNT",
     studentCreateOrEditDto: {
       studentId: null,
+      parentId: null,
       rollNo: "",
       bloodGroupTypeProfileId: "",
       religionTypeProfileId: "",
@@ -75,6 +78,7 @@ function AdmissionForm() {
       setReligionList(await GetByShortName(url, religionShortName));
       setBloodGroupList(await GetByShortName(url, bloodGroupShortName));
       setStudentClassList(await GetByShortName(url, studentClassShortName));
+      setParentList(await Get(import.meta.env.REACT_APP_STUDENT_BASE_URL + "Parents/GetParentName"));
     };
 
     fetchData();
@@ -275,6 +279,40 @@ function AdmissionForm() {
                     </small>
                   )}
                 </div>
+                <div className="col-xl-3 col-lg-6 col-12 form-group">
+                  <label htmlFor="parentId">Parent *</label>
+                  <select
+                    className="select2 form-control"
+                    id="parentId"
+                    name="studentCreateOrEditDto.parentId"
+                    value={
+                      values.studentCreateOrEditDto.parentId
+                    }
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  >
+                    <option value="" disabled>
+                      Please Select Parent *
+                    </option>
+                    {parentList &&
+                      parentList.length > 0 &&
+                      parentList.map((item) => (
+                        <option key={item?.parentId} value={item?.parentId}>
+                          {item?.name}
+                        </option>
+                      ))}
+                  </select>
+                  {touched?.studentCreateOrEditDto?.parentId &&
+                    errors?.studentCreateOrEditDto?.parentId && (
+                      <small className="input-error-message">
+                        {
+                          errors?.studentCreateOrEditDto
+                            ?.parentId
+                        }
+                      </small>
+                    )}
+                </div>
+
                 <div className="col-xl-3 col-lg-6 col-12 form-group">
                   <label htmlFor="rollNo">Roll</label>
                   <input
@@ -484,6 +522,7 @@ function AdmissionForm() {
                       </small>
                     )}
                 </div>
+                <div className="col-12 form-group"></div>
                 <div className="col-lg-6 col-12 form-group">
                   <label htmlFor="shortBio">Short BIO</label>
                   <textarea

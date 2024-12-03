@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { GetByQueryId } from "../../Services/student-service";
 
 function ParentsDetail() {
   const [isLoading, setIsLoading] = useState(true);
+  const [parent, setParent] = useState({});
+  const parentId = useParams("id");
 
   useEffect(() => {
+    const url = import.meta.env.REACT_APP_STUDENT_BASE_URL + "Parents/GetSingleParentForView";
+    const FetchData = async () => {
+      if (parentId) {
+        setParent(await GetByQueryId(url,parentId.id));
+      } else {
+        navigate("/dashboard")
+      }
+    }
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
 
+    FetchData();
     return () => clearTimeout(timer);
   }, []);
 
@@ -58,11 +72,11 @@ function ParentsDetail() {
             </div>
             <div className="single-info-details">
               <div className="item-img">
-                <img src="/src/assets/img/figure/parents.jpg" alt="student" />
+                <img src={parent?.parentPhotoBase64} alt="parent" />
               </div>
               <div className="item-content">
                 <div className="header-inline item-header">
-                  <h3 className="text-dark-medium font-medium">Steven Jones</h3>
+                  <h3 className="text-dark-medium font-medium">{parent?.fullName}</h3>
                   <div className="header-elements">
                     <ul>
                       <li>
@@ -84,9 +98,7 @@ function ParentsDetail() {
                   </div>
                 </div>
                 <p>
-                  Aliquam erat volutpat. Curabiene natis massa sedde lacu
-                  stiquen sodale word moun taiery.Aliquam erat volutpaturabiene
-                  natis massa sedde sodale word moun taiery.
+                  {parent?.shortBio}
                 </p>
                 <div className="info-table table-responsive">
                   <table className="table text-nowrap">
@@ -94,43 +106,43 @@ function ParentsDetail() {
                       <tr>
                         <td>Name:</td>
                         <td className="font-medium text-dark-medium">
-                          Steven Jones
+                          {parent?.fullName}
                         </td>
                       </tr>
                       <tr>
                         <td>Gender:</td>
-                        <td className="font-medium text-dark-medium">Male</td>
+                        <td className="font-medium text-dark-medium">{parent?.gender}</td>
                       </tr>
                       <tr>
                         <td>Occupation:</td>
                         <td className="font-medium text-dark-medium">
-                          Business
+                          {parent?.occupation}
                         </td>
                       </tr>
                       <tr>
                         <td>ID:</td>
-                        <td className="font-medium text-dark-medium">#15059</td>
+                        <td className="font-medium text-dark-medium">{parent?.idNo}</td>
                       </tr>
                       <tr>
                         <td>Address:</td>
                         <td className="font-medium text-dark-medium">
-                          House #10, Road #6, Australia
+                          {parent?.address}
                         </td>
                       </tr>
                       <tr>
                         <td>Religion:</td>
-                        <td className="font-medium text-dark-medium">Islam</td>
+                        <td className="font-medium text-dark-medium">{parent?.religion}</td>
                       </tr>
                       <tr>
                         <td>Phone:</td>
                         <td className="font-medium text-dark-medium">
-                          + 88 98568888418
+                          {parent?.phoneNo}
                         </td>
                       </tr>
                       <tr>
                         <td>E-mail:</td>
                         <td className="font-medium text-dark-medium">
-                          jessiarose@gmail.com
+                          {parent?.email}
                         </td>
                       </tr>
                     </tbody>

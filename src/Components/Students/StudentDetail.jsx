@@ -10,7 +10,6 @@ function StudentDetail() {
   const navigate = useNavigate();
   useEffect(() => {
     const url = import.meta.env.REACT_APP_STUDENT_BASE_URL + "Students/GetSingleStudentForView";
-    debugger
     const FetchData = async () => {
       if (studentId) {
         setStudent(await GetByQueryId(url,studentId.id));
@@ -24,7 +23,6 @@ function StudentDetail() {
     }, 1000);
 
     FetchData();
-    console.log(student)
   }, []);
 
   const gendratePdf = () => {
@@ -125,13 +123,13 @@ function StudentDetail() {
                      <tr>
                        <td>Father Name:</td>
                        <td className="font-medium text-dark-medium">
-                         Not Implemented Yet
+                         {student?.fatherName}
                        </td>
                      </tr>
                      <tr>
                        <td>Mother Name:</td>
                        <td className="font-medium text-dark-medium">
-                         Not Implemented Yet
+                         {student?.motherName}
                        </td>
                      </tr>
                      <tr>
@@ -147,7 +145,7 @@ function StudentDetail() {
                      <tr>
                        <td>Father Occupation:</td>
                        <td className="font-medium text-dark-medium">
-                         Not Implemented Yet
+                         {student?.occupation}
                        </td>
                      </tr>
                      <tr>
@@ -177,7 +175,7 @@ function StudentDetail() {
                      <tr>
                        <td>Address:</td>
                        <td className="font-medium text-dark-medium">
-                         Not Implemented Yet
+                         {student?.address}
                        </td>
                      </tr>
                      <tr>
