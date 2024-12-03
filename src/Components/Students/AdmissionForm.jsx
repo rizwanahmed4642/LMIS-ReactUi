@@ -63,7 +63,6 @@ function AdmissionForm() {
           import.meta.env.REACT_APP_STUDENT_BASE_URL +
           "Students/GetStudentsById";
         const singleRecord = await GetByQueryId(url, id);
-        debugger;
         if (singleRecord) {
           const formValue = StudentAdmissionForminitialValue(singleRecord);
           setAdmissionFormValues(formValue);

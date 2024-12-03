@@ -11,6 +11,7 @@ export const StudentAdmissionForminitialValue = (input) => {
     roleShortName: "STUDNT",
     studentCreateOrEditDto: {
       studentId: input?.studentId ?? null,
+      parentId: input?.parentId ?? null,
       rollNo: input?.rollNo ?? '',
       bloodGroupTypeProfileId: input?.bloodGroupTypeProfileId ?? '',
       religionTypeProfileId: input?.religionTypeProfileId ?? '',
