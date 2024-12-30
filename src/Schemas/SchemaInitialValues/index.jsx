@@ -75,3 +75,16 @@ export const ParentFormInitialValue = (input) => {
     },
   };
 }
+
+export const BookFormInitialValue = (input) => {
+  return {
+    libraryId: input.libraryId,
+    bookName: input.bookName,
+    subjectTypeProfileId: input.subjectTypeProfileId,
+    writerName: input.writerName,
+    classTypeProfileId: input.classTypeProfileId,
+    idNo: input.idNo,
+    publishingDate: input.publishingDate.substring(0,10),
+    uploadDate: input.uploadDate.toString().substring(0,10),
+  }
+}

@@ -67,3 +67,14 @@ export const ParentFormSchema = yup.object({
       parentPhotoBase64: yup.string().required("Please Enter the student Image"),
     })
 });
+
+export const BookFormSchema = yup.object({
+  libraryId: yup.string().nullable().default(null),
+  bookName: yup.string().required("Please Enter your Book Name").min(2,"Book Name Should be atleast 2 character").max(30,"Book Name should not be longer than 30 character"),
+  subjectTypeProfileId: yup.string().required("Please Select The Subject"),
+  writerName: yup.string().required("Please Enter your Writer Name").min(2,"Writer Name Should be atleast 2 character").max(30,"Writer Name should not be longer than 30 character"),
+  classTypeProfileId: yup.string().required("Please Select The Class"),
+  idNo: yup.string().required("IdNo is required"),
+  publishingDate: yup.string().required("Publishing Date is required"),
+  uploadDate: yup.string().required("Upload Date is required"),
+})

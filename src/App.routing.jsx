@@ -75,6 +75,7 @@ function AppRouting() {
             {/* Library */}
             <Route path="all-books" element={<AllBooks />} />
             <Route path="add-books" element={<AddBook />} />
+            <Route path="add-books/:id?" element={<AddBook />} />
             {/* Accounts */}
             <Route path="all-fees" element={<AllFeeCollection />} />
             <Route path="all-expense" element={<AllExpenses />} />
